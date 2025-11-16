@@ -1,141 +1,243 @@
-import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, MotionValue } from 'framer-motion';
+import { cn } from '../lib/utils';
 import { ThemeToggle } from './ThemeToggle';
 
-const DropdownMenu: React.FC<{ items: { name: string, path: string }[], parent: string }> = ({ items, parent }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const IconContainer = ({
+  mouseX,
+  title,
+  icon,
+  href,
+  isActive,
+}: {
+  mouseX: MotionValue;
+  title: string;
+  icon: React.ReactNode;
+  href: string;
+  isActive: boolean;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
 
-    return (
-        <div 
-            className="relative"
-            onMouseEnter={() => setIsOpen(true)}
-            onMouseLeave={() => setIsOpen(false)}
+  const distance = useTransform(mouseX, (val) => {
+    const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+    return val - bounds.x - bounds.width / 2;
+  });
+
+  const widthTransform = useTransform(distance, [-150, 0, 150], [100, 140, 100]);
+  const heightTransform = useTransform(distance, [-150, 0, 150], [80, 120, 80]);
+
+  const widthTransformIcon = useTransform(distance, [-150, 0, 150], [36, 52, 36]);
+  const heightTransformIcon = useTransform(distance, [-150, 0, 150], [36, 52, 36]);
+
+  const width = useSpring(widthTransform, {
+    mass: 0.1,
+    stiffness: 150,
+    damping: 12,
+  });
+  const height = useSpring(heightTransform, {
+    mass: 0.1,
+    stiffness: 150,
+    damping: 12,
+  });
+
+  const widthIcon = useSpring(widthTransformIcon, {
+    mass: 0.1,
+    stiffness: 150,
+    damping: 12,
+  });
+  const heightIcon = useSpring(heightTransformIcon, {
+    mass: 0.1,
+    stiffness: 150,
+    damping: 12,
+  });
+
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Link to={href}>
+      <motion.div
+        ref={ref}
+        style={{ width, height }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className={cn(
+          "relative flex flex-col gap-2 items-center justify-center rounded-2xl transition-colors px-6 py-5",
+          isActive ? "bg-primary text-primary-foreground" : "bg-card hover:bg-secondary"
+        )}
+      >
+        <motion.div
+          style={{ width: widthIcon, height: heightIcon }}
+          className="flex items-center justify-center text-4xl"
         >
-            <button className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center gap-1">
-                {parent} <i className={`fas fa-chevron-down text-xs transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
-            </button>
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute top-full mt-2 w-48 bg-card border border-border rounded-md shadow-lg z-50"
-                    >
-                        <ul className="py-1">
-                            {items.map(item => (
-                                <li key={item.name}>
-                                    <NavLink to={item.path} className="block px-4 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-foreground">
-                                        {item.name}
-                                    </NavLink>
-                                </li>
-                            ))}
-                        </ul>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-    );
+          {icon}
+        </motion.div>
+        <span className="text-lg font-semibold whitespace-nowrap">{title}</span>
+      </motion.div>
+    </Link>
+  );
+};
+
+const FloatingDockDesktop = ({
+  items,
+  className,
+}: {
+  items: { title: string; icon: React.ReactNode; href: string; isActive: boolean }[];
+  className?: string;
+}) => {
+  const mouseX = useMotionValue(Infinity);
+  return (
+    <motion.div
+      onMouseMove={(e) => mouseX.set(e.pageX)}
+      onMouseLeave={() => mouseX.set(Infinity)}
+      className={cn(
+        "hidden h-auto w-full items-center justify-between gap-8 rounded-3xl bg-card/80 backdrop-blur-sm border-2 border-border px-10 py-6 md:flex shadow-xl",
+        className
+      )}
+    >
+      <Link to="/home" className="text-4xl font-bold text-foreground mr-8">
+        BICEP
+      </Link>
+      <div className="flex items-center gap-8">
+        {items.map((item, idx) => (
+          <IconContainer 
+            key={idx}
+            mouseX={mouseX}
+            title={item.title}
+            icon={item.icon}
+            href={item.href}
+            isActive={item.isActive}
+          />
+        ))}
+      </div>
+      <div className="flex items-center gap-4 ml-8">
+        <Link to="/login" className="px-6 py-3 rounded-xl text-lg font-semibold text-foreground/80 bg-secondary hover:bg-border transition-colors">
+          Login
+        </Link>
+        <Link to="/signup" className="px-6 py-3 rounded-xl text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+          Sign Up
+        </Link>
+      </div>
+    </motion.div>
+  );
+};
+
+const FloatingDockMobile = ({
+  items,
+  className,
+}: {
+  items: { title: string; icon: React.ReactNode; href: string; isActive: boolean }[];
+  className?: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={cn("relative block md:hidden", className)}>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            layoutId="nav"
+            className="absolute inset-x-0 bottom-full mb-3 flex flex-col gap-3"
+          >
+            {items.map((item, idx) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 10,
+                  transition: {
+                    delay: idx * 0.05,
+                  },
+                }}
+                transition={{ delay: (items.length - 1 - idx) * 0.05 }}
+              >
+                <Link
+                  to={item.href}
+                  key={item.title}
+                  className={cn(
+                    "flex items-center gap-3 px-5 py-4 rounded-xl text-lg font-semibold",
+                    item.isActive ? "bg-primary text-primary-foreground" : "bg-card hover:bg-secondary"
+                  )}
+                  onClick={() => setOpen(false)}
+                >
+                  <div className="text-2xl w-8">{item.icon}</div>
+                  <span>{item.title}</span>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex h-16 w-16 items-center justify-center rounded-full bg-card border-2 border-border shadow-xl text-2xl"
+      >
+        <i className={cn("fas transition-transform duration-200", open ? "fa-times" : "fa-bars")}></i>
+      </button>
+    </div>
+  );
 };
 
 const Header: React.FC = () => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
-    const navLinks = {
-        'Home': '/home',
-        'Incubation': [
-            { name: 'Apply Now', path: '/incubations/process' },
-            { name: 'Incubatees', path: '/incubations/current' },
-        ],
-        'Events': [
-            { name: 'Code-Red', path: '/event/code-red-hackathon' },
-            { name: 'Anveshana', path: '/event/anveshana-2024' },
-            { name: 'All Events', path: '/events' },
-        ],
-        'Clubs': [
-            { name: 'E-Cell', path: '/club/e-cell' },
-            { name: 'IIC', path: '/club/iic' },
-            { name: 'All Clubs', path: '/clubs' },
-        ],
-        'IdeaBank': '/ideabank',
-        'Facilities': '/facilities',
-        'Team': '/team',
-    };
-    
+  const navItems = [
+    {
+      title: "Home",
+      icon: <i className="fas fa-home"></i>,
+      href: "/home",
+      isActive: location.pathname === "/home" || location.pathname === "/"
+    },
+    {
+      title: "Incubations",
+      icon: <i className="fas fa-lightbulb"></i>,
+      href: "/incubations",
+      isActive: location.pathname.startsWith("/incubations") || location.pathname.startsWith("/incubatee")
+    },
+    {
+      title: "Events",
+      icon: <i className="fas fa-calendar-alt"></i>,
+      href: "/events",
+      isActive: location.pathname.startsWith("/events") || location.pathname.startsWith("/event")
+    },
+    {
+      title: "Clubs",
+      icon: <i className="fas fa-users"></i>,
+      href: "/clubs",
+      isActive: location.pathname.startsWith("/clubs") || location.pathname.startsWith("/club")
+    },
+    {
+      title: "IdeaBank",
+      icon: <i className="fas fa-brain"></i>,
+      href: "/ideabank",
+      isActive: location.pathname === "/ideabank"
+    },
+    {
+      title: "Facilities",
+      icon: <i className="fas fa-building"></i>,
+      href: "/facilities",
+      isActive: location.pathname === "/facilities"
+    },
+    {
+      title: "Team",
+      icon: <i className="fas fa-user-friends"></i>,
+      href: "/team",
+      isActive: location.pathname === "/team"
+    },
+  ];
+
   return (
-    <header className="bg-background/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50 shadow-subtle">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex-shrink-0 flex items-center gap-2">
-            <Link to="/home" className="text-2xl font-bold text-foreground">
-              BICEP
-            </Link>
-          </div>
-
-          <nav className="hidden md:flex items-center space-x-6">
-            {Object.entries(navLinks).map(([key, value]) => (
-                 Array.isArray(value) ? (
-                    <DropdownMenu key={key} parent={key} items={value} />
-                ) : (
-                    <NavLink
-                        key={key}
-                        to={value}
-                        className={({ isActive }) =>
-                          `text-sm font-medium transition-colors ${isActive ? 'text-primary' : 'text-foreground/80 hover:text-foreground'}`
-                        }
-                    >
-                        {key}
-                    </NavLink>
-                )
-            ))}
-          </nav>
-          
-          <div className="hidden md:flex items-center space-x-3">
-             <div className="relative">
-                <input type="text" placeholder="Search..." className="bg-secondary border border-border rounded-md pl-10 pr-4 py-1.5 text-sm w-40 focus:w-48 transition-all duration-300 focus:ring-1 focus:ring-ring"/>
-                <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"></i>
-            </div>
-            <ThemeToggle />
-            <Link to="/login" className="px-4 py-2 rounded-md text-sm font-medium text-foreground/80 bg-secondary hover:bg-border transition-colors">
-              Login
-            </Link>
-            <Link to="/signup" className="px-4 py-2 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-              Sign Up
-            </Link>
-          </div>
-
-          <div className="md:hidden flex items-center space-x-3">
-            <ThemeToggle />
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-foreground/80 hover:text-foreground hover:bg-secondary focus:outline-none"
-            >
-              <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} h-6 w-6`}></i>
-            </button>
-          </div>
+    <header className="fixed top-8 left-0 right-0 z-50 px-6">
+      <div className="w-full">
+        <FloatingDockDesktop items={navItems} />
+        <div className="flex md:hidden justify-end">
+          <FloatingDockMobile items={navItems} />
         </div>
       </div>
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-             <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="md:hidden border-t border-border/50">
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                    {/* Simplified mobile nav for brevity */}
-                    <NavLink to="/home" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium">Home</NavLink>
-                    <NavLink to="/incubations" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium">Incubations</NavLink>
-                    <NavLink to="/events" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium">Events</NavLink>
-                    <div className="pt-4 mt-4 border-t border-border/50 flex gap-3">
-                         <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex-1 text-center px-4 py-2 rounded-md text-sm font-medium text-foreground bg-secondary hover:bg-border transition-colors">Login</Link>
-                         <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} className="flex-1 text-center px-4 py-2 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">Sign Up</Link>
-                    </div>
-                </div>
-            </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 };

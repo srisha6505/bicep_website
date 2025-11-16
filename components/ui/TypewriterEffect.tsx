@@ -31,15 +31,15 @@ export const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
       } else {
         clearInterval(typingInterval);
       }
-    }, 100);
+    }, 20);
 
     return () => clearInterval(typingInterval);
   }, [charIndex, wordIndex, wordsArray]);
 
   return (
-    <div className={cn("my-6 flex flex-wrap items-center", className)}>
+    <div className={cn("my-6 flex flex-wrap items-center gap-8", className)}>
       {wordsArray.map((word, wIndex) => (
-        <div key={`word-${wIndex}`} className={cn("inline-block mr-3", word.className)}>
+        <div key={`word-${wIndex}`} className={cn("inline-block", word.className)}>
           {word.text.map((char, cIndex) => (
             <motion.span
               key={`char-${cIndex}`}

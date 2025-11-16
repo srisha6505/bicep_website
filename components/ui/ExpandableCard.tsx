@@ -25,31 +25,38 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
       className={cn(
-        "rounded-xl border border-border bg-card overflow-hidden group transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
+        "rounded-xl border border-border/40 bg-card overflow-hidden group transition-all duration-300",
+        "hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 hover:border-primary/50",
+        "backdrop-blur-sm bg-gradient-to-br from-card to-card/80",
         onClick && "cursor-pointer",
         className
       )}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.2 }}
       layout
     >
-      <div className="h-48 w-full overflow-hidden">
+      <div className="relative h-80 w-full overflow-hidden">
         <motion.img
           src={imageUrl}
           alt="Card image"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="h-full w-full object-cover"
+          whileHover={{ scale: 1.15 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
-      <div className="p-4">
+      <div className="p-8">
         <div>{cardHeader}</div>
         <AnimatePresence>
           {isHovered && expandedContent && (
             <motion.div
               initial={{ height: 0, opacity: 0, marginTop: 0 }}
-              animate={{ height: "auto", opacity: 1, marginTop: "0.75rem" }}
+              animate={{ height: "auto", opacity: 1, marginTop: "1rem" }}
               exit={{ height: 0, opacity: 0, marginTop: 0 }}
               className="overflow-hidden"
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-             <div className="pt-3 border-t border-border/50">
+             <div className="pt-3 border-t border-primary/20">
                 {expandedContent}
              </div>
             </motion.div>

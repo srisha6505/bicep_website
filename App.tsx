@@ -32,7 +32,7 @@ const App: React.FC = () => {
         <Suspense fallback={<LoadingSpinner />}>
           <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex-grow">
+            <main className="flex-grow pt-32">
               <Routes>
                 <Route path="/" element={<Navigate to="/home" replace />} />
                 <Route path="/home" element={<HomePage />} />
