@@ -7,46 +7,46 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root {
-        --background: 240 10% 3.9%;
+        --background: 0 0% 97%; /* Light grey/white */
+        --foreground: 0 0% 10%; /* Dark text */
+        --card: 0 0% 100%; /* White */
+        --card-foreground: 0 0% 10%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 10%;
+        --primary: 166 84% 40%; /* Teal */
+        --primary-foreground: 0 0% 100%;
+        --secondary: 0 0% 90%; /* Light grey */
+        --secondary-foreground: 0 0% 10%;
+        --muted: 0 0% 90%;
+        --muted-foreground: 0 0% 45%;
+        --accent: 166 84% 40%; /* Teal */
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 0 0% 85%; /* Grey */
+        --input: 0 0% 85%;
+        --ring: 166 84% 40%; /* Teal */
+      }
+      .dark {
+        --background: 0 0% 0%; /* Black */
         --foreground: 0 0% 98%;
-        --card: 240 4% 9%;
+        --card: 0 0% 3%; /* Very dark grey, almost black */
         --card-foreground: 0 0% 98%;
-        --popover: 240 10% 3.9%;
+        --popover: 0 0% 3%;
         --popover-foreground: 0 0% 98%;
         --primary: 166 84% 48%; /* Teal */
         --primary-foreground: 0 0% 98%;
-        --secondary: 240 4% 12%;
+        --secondary: 0 0% 5%; /* Very dark grey, almost black */
         --secondary-foreground: 0 0% 98%;
-        --muted: 240 4% 12%;
+        --muted: 0 0% 5%;
         --muted-foreground: 0 0% 63.9%;
-        --accent: 166 84% 48%;
+        --accent: 166 84% 48%; /* Teal */
         --accent-foreground: 0 0% 98%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
-        --border: 240 4% 15%;
-        --input: 240 4% 15%;
-        --ring: 166 84% 48%;
-      }
-      .light {
-        --background: 0 0% 100%;
-        --foreground: 240 10% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 240 10% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 240 10% 3.9%;
-        --primary: 166 84% 40%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 0 0% 96.1%;
-        --secondary-foreground: 240 10% 3.9%;
-        --muted: 0 0% 96.1%;
-        --muted-foreground: 0 0% 45.1%;
-        --accent: 166 84% 40%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 89.8%;
-        --input: 0 0% 89.8%;
-        --ring: 166 84% 40%;
+        --border: 0 0% 8%; /* Very dark grey, almost black */
+        --input: 0 0% 8%;
+        --ring: 166 84% 48%; /* Teal */
       }
     </style>
     <script>
@@ -134,7 +134,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="dark bg-background text-foreground transition-colors duration-300">
+  <body class="light bg-background text-foreground transition-colors duration-300">
     <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

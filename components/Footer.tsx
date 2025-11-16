@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Footer: React.FC = () => {
   return (
     <footer className="bg-background px-8 lg:px-12 py-8">
-      <div className="w-full bg-card border border-border rounded-3xl shadow-2xl px-8 lg:px-12 py-16">
+      <div className="w-full bg-card border rounded-3xl shadow-2xl px-8 lg:px-12 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 text-lg">
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
             <h3 className="text-3xl font-bold text-foreground mb-4">BICEP</h3>

@@ -111,6 +111,7 @@ const FloatingDockDesktop = ({
         ))}
       </div>
       <div className="flex items-center gap-4 ml-8">
+        <ThemeToggle />
         <Link to="/login" className="px-6 py-3 rounded-xl text-lg font-semibold text-foreground/80 bg-secondary hover:bg-border transition-colors">
           Login
         </Link>

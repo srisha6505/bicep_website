@@ -7,19 +7,24 @@ import { TypewriterEffect } from '../components/ui/TypewriterEffect';
 import { Carousel } from '../components/ui/Carousel';
 import Modal from '../components/Modal';
 import { PixelImage } from '../components/ui/PixelImage';
+import { useTheme } from '../components/ThemeProvider';
 
 const HomePage: React.FC = () => {
     const [selectedItem, setSelectedItem] = useState<Incubatee | Event | null>(null);
+    const { theme } = useTheme();
 
     return (
         <div className="bg-background">
             {selectedItem && <Modal item={selectedItem} onClose={() => setSelectedItem(null)} />}
             
             {/* Hero Section */}
-            <section className="relative h-[90vh] flex items-center text-white overflow-hidden">
+            <section className="relative h-[90vh] flex items-center text-white overflow-hidden mt-20">
                 <div className="absolute inset-0 w-full h-full">
                     <PixelImage 
-                        src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" 
+                        src={theme === 'light' 
+                            ? "https://wallpapercave.com/wp/wp2047016.jpg" 
+                            : "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+                        } 
                         grid="8x8" 
                     />
                 </div>
@@ -31,8 +36,8 @@ const HomePage: React.FC = () => {
                     className="relative z-10 px-8 lg:px-12 max-w-full w-full"
                 >
                     <TypewriterEffect words={[
-                        { text: "Welcome" },
-                        { text: "to" },
+                        { text: "Welcome", className: "text-white" },
+                        { text: "to", className: "text-white" },
                         { text: "BMS", className: "text-primary" },
                         { text: "Innovation", className: "text-primary" },
                         { text: "Centre", className: "text-primary" },

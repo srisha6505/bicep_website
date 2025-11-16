@@ -255,8 +255,8 @@ export const clubs: Club[] = [
 export const teamMembers: TeamMember[] = [
   {
     id: 1,
-    name: 'Dr. Innovation Head',
-    designation: 'Director, BICEP',
+    name: 'Dr. Seema Singh',
+    designation: 'Dean, I.E. & BICEP Director',
     photo: 'https://picsum.photos/seed/director/300',
     qualification: 'PhD, Business Administration',
     role: 'Oversees all operations and strategic direction of BICEP.',
@@ -265,8 +265,8 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 2,
-    name: 'Prof. Startup Mentor',
-    designation: 'Faculty Coordinator',
+    name: 'Prof. Shama H M',
+    designation: 'Coordinator, Innovation',
     photo: 'https://picsum.photos/seed/mentor/300',
     qualification: 'M.Tech, CSE',
     role: 'Mentors incubatees and connects them with industry experts.',
@@ -275,8 +275,8 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 3,
-    name: 'E-Cell President',
-    designation: 'President, E-Cell',
+    name: 'Himanshu Lodha',
+    designation: 'President, IIC',
     photo: 'https://picsum.photos/seed/ecellprez2/300',
     qualification: 'Student, 3rd Year CSE',
     role: 'Leads the E-Cell and represents the student entrepreneurial body.',
@@ -288,7 +288,7 @@ export const teamMembers: TeamMember[] = [
 export const facilities: Facility[] = [
   {
     id: 1,
-    name: 'Rapid Prototyping Lab',
+    name: 'Arohan Lab',
     type: 'Lab',
     description: 'Equipped with 3D printers, laser cutters, and other tools to bring your hardware ideas to life.',
     image: 'https://picsum.photos/seed/lab1/800/600',
